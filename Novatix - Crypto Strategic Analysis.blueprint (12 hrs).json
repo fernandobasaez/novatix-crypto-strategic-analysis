@@ -1,0 +1,1525 @@
+{
+    "name": "Novatix - Crypto Strategic Analysis",
+    "flow": [
+        {
+            "id": 2,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": true,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "ca": "",
+                "qs": [],
+                "url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=aud&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true",
+                "data": "",
+                "gzip": true,
+                "method": "get",
+                "headers": [
+                    {
+                        "name": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "timeout": "",
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "bodyType": "raw",
+                "contentType": "application/json",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "parseResponse": true,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 150,
+                    "name": "Get Crypto Prices"
+                }
+            }
+        },
+        {
+            "id": 3,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": true,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "ca": "",
+                "qs": [],
+                "url": "https://pro-api.coinmarketcap.com/v3/fear-and-greed/historical?limit=1",
+                "data": "",
+                "gzip": true,
+                "method": "get",
+                "headers": [
+                    {
+                        "name": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "name": "X-CMC_PRO_API_KEY",
+                        "value": "c4cb8754-a6af-4b40-8ff9-ba5f1ac18029"
+                    }
+                ],
+                "timeout": "",
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "bodyType": "raw",
+                "contentType": "application/json",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "parseResponse": true,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 150,
+                    "name": "Get CMC Fear & Greed Index"
+                }
+            }
+        },
+        {
+            "id": 4,
+            "module": "openai-gpt-3:CreateCompletion",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 7737385
+            },
+            "mapper": {
+                "model": "o4-mini",
+                "top_p": "1",
+                "select": "chat",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "Eres un analista estratégico de criptomonedas CONSERVADOR especializado en decisiones de inversión a mediano y largo plazo (1 a 3 años). Tu audiencia son personas que no necesariamente tienen conocimientos técnicos profundos sobre criptomonedas o mercados financieros.\n\nFILOSOFÍA CONSERVADORA: Solo recomienda cambios cuando sean REALMENTE necesarios y justifiquen los costos de trading. Prioriza MANTENER las posiciones actuales a menos que haya razones CONVINCENTES para cambiar.\n\nUMBRALES MÍNIMOS PARA RECOMENDACIONES:\n- Solo recomienda cambios ≥5% en asignación (no ≥2%)\n- Solo recomienda ACCUMULATE si hay señales MUY ALCISTAS y confluencia de factores positivos\n- Solo recomienda REDUCE si hay señales MUY BAJISTAS o riesgos significativos\n- HOLD debe ser tu recomendación por defecto en mercados neutrales o cambios menores\n- REBALANCE solo si la desviación del portfolio objetivo es >10% en algún activo\n\nIMPORTANT: Debes comenzar tu respuesta exactamente con este formato:\nRECOMMENDATION: [ACCUMULATE|REBALANCE|REDUCE|HOLD]\n\nLuego proporciona ACCIONES ESPECÍFICAS para cada activo en este formato exacto:\nBTC_ACTION: [COMPRAR|VENDER|HOLD]\nBTC_PERCENTAGE: [porcentaje como +5% o -10% o 0%]\nETH_ACTION: [COMPRAR|VENDER|HOLD]\nETH_PERCENTAGE: [porcentaje como +5% o -10% o 0%]\nSOL_ACTION: [COMPRAR|VENDER|HOLD]\nSOL_PERCENTAGE: [porcentaje como +5% o -10% o 0%]\n\nCRITERIOS ESTRICTOS PARA ACCIONES:\n- COMPRAR: Solo si hay una oportunidad excepcional (caída >15% injustificada o noticias muy positivas)\n- VENDER: Solo si hay riesgos graves o el activo está sobrevaluado >20%\n- HOLD: Tu acción preferida por defecto (usar en 80%+ de los casos)\n\nDespués proporciona tu análisis detallado EN ESPAÑOL, cubriendo:\n1. ¿Por qué HOLD es generalmente la mejor estrategia hoy?\n2. Evaluación del ciclo de mercado (explicado de forma simple)\n3. Fortaleza fundamental de cada criptomoneda (en términos fáciles de entender)\n4. Evaluación de riesgo vs. costos de trading\n5. Solo si recomiendas cambios: justificación clara de por qué vale la pena pagar los fees\n\nPara la ASIGNACIÓN OBJETIVO (BTC: 50%, ETH: 35%, SOL: 15%), solo recomienda ajustes si:\n- La desviación actual es >10% del objetivo\n- Hay eventos fundamentales significativos\n- Los cambios propuestos son ≥5% para justificar fees de trading\n\nRECUERDA: Cada transacción cuesta dinero. La paciencia y mantener posiciones suele ser más rentable que el trading frecuente. Mantén el análisis SIMPLE y ACCESIBLE para personas sin experiencia en trading."
+                    },
+                    {
+                        "role": "user",
+                        "content": "Eres un asesor de inversiones en criptoactivos, con un enfoque conservador pero oportunista. Tienes acceso a:\r\n\r\n- La distribución actual de una cartera en BTC, ETH y SOL.\r\n- Los precios actuales y sus movimientos en 24h.\r\n- El índice de Miedo y Codicia.\r\n- Eventos globales recientes relevantes (por ejemplo, decisiones de la Fed, tensiones geopolíticas, regulaciones, etc.).\r\n\r\nTu tarea es generar una recomendación concreta de inversión para hoy, incluyendo:\r\n\r\nDATOS A ANALIZAR:\r\n\r\nAsignación Objetivo Actual del Portfolio:\r\n- BTC: 50%\r\n- ETH: 35% \r\n- SOL: 15%\r\n\r\nDatos Actuales del Mercado (AUD):\r\n- BTC: ${{2.data.bitcoin.aud}} (cambio 24h: {{2.data.bitcoin.aud_24h_change}}%)\r\n- ETH: ${{2.data.ethereum.aud}} (cambio 24h: {{2.data.ethereum.aud_24h_change}}%)\r\n- SOL: ${{2.data.solana.aud}} (cambio 24h: {{2.data.solana.aud_24h_change}}%)\r\n\r\nDatos de Capitalización de Mercado:\r\n- BTC Market Cap: ${{2.data.bitcoin.aud_market_cap}}\r\n- ETH Market Cap: ${{2.data.ethereum.aud_market_cap}}\r\n- SOL Market Cap: ${{2.data.solana.aud_market_cap}}\r\n\r\nÍndice de Miedo y Codicia: {{3.data.data[].value}} ({{3.data.data[].value_classification}})\r\n\r\n\r\n\r\nPor favor proporciona:\r\n1. Recomendación estratégica general (ACCUMULATE/REBALANCE/REDUCE/HOLD)\r\n2. ACCIONES ESPECÍFICAS para cada activo (COMPRAR/VENDER/HOLD) \r\n3. PORCENTAJES ESPECÍFICOS para rebalancear cada activo\r\n4. Considera las tarifas de trading en tus recomendaciones (solo sugiere cambios >2%)\r\n5. Explica todo en ESPAÑOL de forma SIMPLE y ACCESIBLE\r\n6. Proporciona un análisis detallado dividido en 5 secciones:\r\n   - **Motivo de la estrategia principal elegida (ACCUMULATE/REBALANCE/REDUCE/HOLD)**.\r\n   - **Evaluación del ciclo de mercado actual**.\r\n   - **Fortaleza fundamental de cada criptomoneda (BTC, ETH, SOL)**.\r\n   - **Evaluación de riesgos vs. beneficios (incluye costos de trading y oportunidad)**.\r\n   - **Eventos macroeconómicos o noticias mundiales recientes que puedan estar influyendo (incluir si hay impacto directo o indirecto)**.\r\n   \r\nFormatea tu respuesta exactamente como se especifica con las etiquetas claras BTC_ACTION, BTC_PERCENTAGE, etc. para facilitar la extracción de datos.\r\nSé claro, profesional y estratégico. Evita repetir frases día tras día. Usa lenguaje simple pero con autoridad.",
+                        "imageDetail": "auto"
+                    }
+                ],
+                "temperature": "0.1",
+                "n_completions": "1",
+                "response_format": "text"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 150,
+                    "name": "Strategic Analysis (Spanish)"
+                },
+                "restore": {
+                    "expect": {
+                        "stop": {
+                            "mode": "chose"
+                        },
+                        "model": {
+                            "mode": "chose",
+                            "label": "o4-mini (system)"
+                        },
+                        "select": {
+                            "label": "Create a Chat Completion (GPT and o1 models)"
+                        },
+                        "messages": {
+                            "mode": "chose",
+                            "items": [
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "Developer / System"
+                                    }
+                                },
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "User"
+                                    },
+                                    "imageDetail": {
+                                        "mode": "chose",
+                                        "label": "Auto"
+                                    },
+                                    "imageInputType": {
+                                        "mode": "chose",
+                                        "label": "Empty"
+                                    }
+                                }
+                            ]
+                        },
+                        "logit_bias": {
+                            "mode": "chose"
+                        },
+                        "max_tokens": {
+                            "empty": true
+                        },
+                        "tool_choice": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "response_format": {
+                            "mode": "chose",
+                            "label": "Text"
+                        },
+                        "reasoning_effort": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "additionalParameters": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            },
+                            "label": "My OpenAI connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Select Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "chat",
+                                "prompt"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 2,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "n_completions",
+                        "type": "number",
+                        "label": "Number"
+                    },
+                    {
+                        "name": "frequency_penalty",
+                        "type": "number",
+                        "label": "Frequency Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "presence_penalty",
+                        "type": "number",
+                        "label": "Presence Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "logit_bias",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "token",
+                                    "type": "text",
+                                    "label": "Token ID",
+                                    "required": true
+                                },
+                                {
+                                    "name": "probability",
+                                    "type": "number",
+                                    "label": "Probability",
+                                    "required": true,
+                                    "validate": {
+                                        "max": 100,
+                                        "min": -100
+                                    }
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Token Probability"
+                        },
+                        "type": "array",
+                        "label": "Token Probability"
+                    },
+                    {
+                        "name": "seed",
+                        "type": "integer",
+                        "label": "Seed"
+                    },
+                    {
+                        "name": "tool_choice",
+                        "type": "select",
+                        "label": "Tool Choice",
+                        "validate": {
+                            "enum": [
+                                "none",
+                                "auto",
+                                "required"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "stop",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Stop Sequence"
+                        },
+                        "type": "array",
+                        "label": "Stop Sequences",
+                        "validate": {
+                            "maxItems": 4
+                        }
+                    },
+                    {
+                        "name": "additionalParameters",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "key",
+                                    "type": "text",
+                                    "label": "Parameter Name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "type",
+                                    "type": "select",
+                                    "label": "Input Type",
+                                    "options": [
+                                        {
+                                            "label": "Text",
+                                            "value": "text",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ],
+                                            "default": true
+                                        },
+                                        {
+                                            "label": "Number",
+                                            "value": "number",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "number",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Boolean",
+                                            "value": "boolean",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "boolean",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Date",
+                                            "value": "date",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "date",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Any",
+                                            "value": "any",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "any",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Input Parameter"
+                        },
+                        "type": "array",
+                        "label": "Other Input Parameters"
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "max_tokens",
+                        "type": "uinteger",
+                        "label": "Max Completion Tokens"
+                    },
+                    {
+                        "name": "messages",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "role",
+                                    "type": "select",
+                                    "label": "Role",
+                                    "options": {
+                                        "store": [
+                                            {
+                                                "label": "User",
+                                                "value": "user",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    },
+                                                    {
+                                                        "name": "imageInputType",
+                                                        "type": "select",
+                                                        "label": "Image Input Type",
+                                                        "options": [
+                                                            {
+                                                                "label": "URL",
+                                                                "value": "url",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Make sure to use a publicly accessible URL.\nYou can test if your image is publicly accessible by opening the link in an incognito tab.",
+                                                                        "name": "imageUrl",
+                                                                        "type": "url",
+                                                                        "label": "Image URL"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "Image File",
+                                                                "value": "file",
+                                                                "nested": [
+                                                                    {
+                                                                        "name": "imageFile",
+                                                                        "spec": [
+                                                                            {
+                                                                                "help": "Accepted extensions: `.jpg`, `.jpeg`, `.png`, `.webp` and `.gif`.",
+                                                                                "name": "imageFilename",
+                                                                                "type": "filename",
+                                                                                "label": "Image Filename",
+                                                                                "semantic": "file:name",
+                                                                                "extension": [
+                                                                                    "jpg",
+                                                                                    "jpeg",
+                                                                                    "png",
+                                                                                    "webp",
+                                                                                    "gif"
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "name": "imageData",
+                                                                                "type": "buffer",
+                                                                                "label": "Image Data",
+                                                                                "semantic": "file:data"
+                                                                            }
+                                                                        ],
+                                                                        "type": "collection",
+                                                                        "label": "Image"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ],
+                                                        "mappable": false
+                                                    },
+                                                    {
+                                                        "help": "Recommended value: `Auto`",
+                                                        "name": "imageDetail",
+                                                        "type": "select",
+                                                        "label": "Image Detail",
+                                                        "options": [
+                                                            {
+                                                                "label": "Auto",
+                                                                "value": "auto",
+                                                                "default": true
+                                                            },
+                                                            {
+                                                                "label": "High",
+                                                                "value": "high"
+                                                            },
+                                                            {
+                                                                "label": "Low",
+                                                                "value": "low"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "Assistant",
+                                                "value": "assistant",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    },
+                                                    {
+                                                        "mode": "edit",
+                                                        "name": "tool_calls",
+                                                        "spec": {
+                                                            "spec": [
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "hidden",
+                                                                    "default": "function"
+                                                                },
+                                                                {
+                                                                    "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                                                                    "name": "id",
+                                                                    "type": "text",
+                                                                    "label": "Tool call ID"
+                                                                },
+                                                                {
+                                                                    "name": "function",
+                                                                    "spec": [
+                                                                        {
+                                                                            "help": "The name of the function previously called.",
+                                                                            "name": "name",
+                                                                            "type": "text",
+                                                                            "label": "Name",
+                                                                            "required": true
+                                                                        },
+                                                                        {
+                                                                            "help": "The arguments previously output by the AI.",
+                                                                            "name": "arguments",
+                                                                            "type": "text",
+                                                                            "label": "Arguments",
+                                                                            "required": true
+                                                                        }
+                                                                    ],
+                                                                    "type": "collection",
+                                                                    "label": "Function"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Tool Call"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Tool Calls",
+                                                        "labels": {
+                                                            "add": "Add tool call"
+                                                        },
+                                                        "mappable": {
+                                                            "help": "You can map the entire `Choices[]: Message.Tool Calls` array from a previous Create a Completion module here."
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "Developer / System",
+                                                "value": "system",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "Tool",
+                                                "value": "tool",
+                                                "nested": [
+                                                    {
+                                                        "help": "The return of the function. This role should only be used when you have processed a previous function call and want to send the output of the function execution back to the AI.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                                                        "name": "tool_call_id",
+                                                        "type": "text",
+                                                        "label": "Tool Call ID.",
+                                                        "required": true
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "required": true
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Message"
+                        },
+                        "type": "array",
+                        "label": "Messages",
+                        "required": true
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "json_object"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "reasoning_effort",
+                        "type": "select",
+                        "label": "Reasoning Effort",
+                        "validate": {
+                            "enum": [
+                                "low",
+                                "medium",
+                                "high"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "result",
+                        "type": "any",
+                        "label": "Result"
+                    },
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "object",
+                        "type": "text",
+                        "label": "Object"
+                    },
+                    {
+                        "name": "created",
+                        "type": "date",
+                        "label": "Created"
+                    },
+                    {
+                        "name": "model",
+                        "type": "text",
+                        "label": "Model"
+                    },
+                    {
+                        "name": "choices",
+                        "spec": [
+                            {
+                                "name": "text",
+                                "type": "text",
+                                "label": "Text"
+                            },
+                            {
+                                "name": "index",
+                                "type": "number",
+                                "label": "Index"
+                            },
+                            {
+                                "name": "logprobs",
+                                "type": "text",
+                                "label": "Log Probs"
+                            },
+                            {
+                                "name": "finish_reason",
+                                "type": "text",
+                                "label": "Finish Reason"
+                            },
+                            {
+                                "name": "message",
+                                "spec": [
+                                    {
+                                        "name": "role",
+                                        "type": "text",
+                                        "label": "Role"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "Content"
+                                    },
+                                    {
+                                        "name": "tool_calls",
+                                        "spec": [
+                                            {
+                                                "name": "id",
+                                                "type": "text",
+                                                "label": "ID"
+                                            },
+                                            {
+                                                "name": "type",
+                                                "type": "text",
+                                                "label": "Type"
+                                            },
+                                            {
+                                                "name": "function",
+                                                "spec": [
+                                                    {
+                                                        "name": "name",
+                                                        "type": "text",
+                                                        "label": "Name"
+                                                    },
+                                                    {
+                                                        "name": "arguments",
+                                                        "type": "text",
+                                                        "label": "Arguments"
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "Function"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Tool Calls"
+                                    },
+                                    {
+                                        "name": "refusal",
+                                        "type": "text",
+                                        "label": "Refusal"
+                                    },
+                                    {
+                                        "name": "annotations",
+                                        "spec": [
+                                            {
+                                                "name": "type",
+                                                "type": "text",
+                                                "label": "Type"
+                                            },
+                                            {
+                                                "name": "url_citation",
+                                                "spec": [
+                                                    {
+                                                        "name": "end_index",
+                                                        "type": "number",
+                                                        "label": "End Index"
+                                                    },
+                                                    {
+                                                        "name": "start_index",
+                                                        "type": "number",
+                                                        "label": "Start Index"
+                                                    },
+                                                    {
+                                                        "name": "title",
+                                                        "type": "text",
+                                                        "label": "Title"
+                                                    },
+                                                    {
+                                                        "name": "url",
+                                                        "type": "text",
+                                                        "label": "URL"
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "URL Citation"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Annotations"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Message"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Choices"
+                    },
+                    {
+                        "name": "usage",
+                        "spec": [
+                            {
+                                "name": "prompt_tokens",
+                                "type": "number",
+                                "label": "Prompt Tokens"
+                            },
+                            {
+                                "name": "completion_tokens",
+                                "type": "text",
+                                "label": "Completion Tokens"
+                            },
+                            {
+                                "name": "total_tokens",
+                                "type": "number",
+                                "label": "Total Tokens"
+                            },
+                            {
+                                "name": "prompt_tokens_details",
+                                "spec": [
+                                    {
+                                        "name": "cached_tokens",
+                                        "type": "uinteger",
+                                        "label": "Cached Tokens"
+                                    },
+                                    {
+                                        "name": "text_tokens",
+                                        "type": "uinteger",
+                                        "label": "Text Tokens"
+                                    },
+                                    {
+                                        "name": "image_tokens",
+                                        "type": "uinteger",
+                                        "label": "Image Tokens"
+                                    },
+                                    {
+                                        "name": "audio_tokens",
+                                        "type": "uinteger",
+                                        "label": "Audio Tokens"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Prompt Tokens Details"
+                            },
+                            {
+                                "name": "completion_tokens_details",
+                                "spec": [
+                                    {
+                                        "name": "reasoning_tokens",
+                                        "type": "uinteger",
+                                        "label": "Reasoning Tokens"
+                                    },
+                                    {
+                                        "name": "text_tokens",
+                                        "type": "uinteger",
+                                        "label": "Text Tokens"
+                                    },
+                                    {
+                                        "name": "audio_tokens",
+                                        "type": "uinteger",
+                                        "label": "Audio Tokens"
+                                    },
+                                    {
+                                        "name": "accepted_prediction_tokens",
+                                        "type": "uinteger",
+                                        "label": "Accepted Prediction Tokens"
+                                    },
+                                    {
+                                        "name": "rejected_prediction_tokens",
+                                        "type": "uinteger",
+                                        "label": "Rejected Prediction Tokens"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Completion Tokens Details"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Usage"
+                    },
+                    {
+                        "name": "service_tier",
+                        "type": "text",
+                        "label": "Service Tier"
+                    },
+                    {
+                        "name": "system_fingerprint",
+                        "type": "text",
+                        "label": "System Fingerprint"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "http:ActionSendData",
+            "version": 3,
+            "parameters": {
+                "handleErrors": true,
+                "useNewZLibDeCompress": true
+            },
+            "mapper": {
+                "ca": "",
+                "url": "https://fernandobasaez.pythonanywhere.com/extract-crypto-actions",
+                "data": "{\"ai_response\": \"{{4.choices[].message.content}}\", \"btc_price\": \"{{2.data.bitcoin.aud}}\", \"eth_price\": \"{{2.data.ethereum.aud}}\", \"sol_price\": \"{{2.data.solana.aud}}\", \"fear_greed\": \"{{3.data.data[].value}}\", \"fear_greed_classification\": \"{{3.data.data[].value_classification}}\"}",
+                "gzip": true,
+                "method": "post",
+                "headers": [
+                    {
+                        "name": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "name": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "timeout": "",
+                "useMtls": false,
+                "authPass": "",
+                "authUser": "",
+                "bodyType": "raw",
+                "contentType": "application/json",
+                "serializeUrl": false,
+                "shareCookies": false,
+                "parseResponse": true,
+                "followRedirect": true,
+                "useQuerystring": false,
+                "followAllRedirects": false,
+                "rejectUnauthorized": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 150,
+                    "name": "Python Data Extraction"
+                }
+            }
+        },
+        {
+            "id": 6,
+            "module": "google-sheets:addRow",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 8588608
+            },
+            "mapper": {
+                "mode": "fromAll",
+                "values": {
+                    "0": "{{formatDate(now; \"YYYY-MM-DD HH:mm:ss\"; \"Australia/Melbourne\")}}",
+                    "1": "{{5.data.recommendation}}",
+                    "2": "{{if(contains(\"ACCUMULATE,REDUCE\"; 5.data.recommendation); \"HIGH\"; if(contains(\"REBALANCE\"; 5.data.recommendation); \"MEDIUM\"; \"LOW\"))}}",
+                    "3": "{{2.data.bitcoin.aud}}",
+                    "4": "{{2.data.ethereum.aud}}",
+                    "5": "{{2.data.solana.aud}}",
+                    "6": "{{3.data.data[].value}}",
+                    "7": "{{3.data.data[].value_classification}}",
+                    "8": "{{2.data.bitcoin.aud_24h_change}}",
+                    "9": "{{2.data.ethereum.aud_24h_change}}",
+                    "10": "{{2.data.solana.aud_24h_change}}",
+                    "11": "{{substring(4.choices[].message.content; 0; 3000)}}",
+                    "12": "{{if(5.data.success; \"SUCCESS\"; \"ERROR\")}}",
+                    "13": "{{5.data.btc_action}}",
+                    "14": "{{5.data.btc_percentage}}",
+                    "15": "{{5.data.eth_action}}",
+                    "16": "{{5.data.eth_percentage}}",
+                    "17": "{{5.data.sol_action}}",
+                    "18": "{{5.data.sol_percentage}}",
+                    "19": "{{if(contains(upper(4.choices[].message.content); \"BULL_MARKET\"); \"BULL_MARKET\"; if(contains(upper(4.choices[].message.content); \"BEAR_MARKET\"); \"BEAR_MARKET\"; if(contains(upper(4.choices[].message.content); \"CORRECTION\"); \"CORRECTION\"; \"NEUTRAL\")))}}",
+                    "20": "{{5.data.success}}"
+                },
+                "sheetId": "Sheet1",
+                "spreadsheetId": "1Rqg7s6KY8yJ15wGSrRfliaPD_TFDeFj5gHtiI7u8yuM",
+                "includesHeaders": true,
+                "insertDataOption": "INSERT_ROWS",
+                "valueInputOption": "USER_ENTERED",
+                "insertUnformatted": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1500,
+                    "y": 150,
+                    "name": "Log to Sheets with Python Data"
+                },
+                "restore": {
+                    "expect": {
+                        "mode": {
+                            "label": "Select from all"
+                        },
+                        "sheetId": {
+                            "mode": "chose",
+                            "label": "Sheet1"
+                        },
+                        "includesHeaders": {
+                            "label": "Yes",
+                            "nested": [
+                                {
+                                    "name": "values",
+                                    "spec": [
+                                        {
+                                            "name": "0",
+                                            "type": "text",
+                                            "label": "Date (A)"
+                                        },
+                                        {
+                                            "name": "1",
+                                            "type": "text",
+                                            "label": "Analysis Type (B)"
+                                        },
+                                        {
+                                            "name": "2",
+                                            "type": "text",
+                                            "label": "Action (C)"
+                                        },
+                                        {
+                                            "name": "3",
+                                            "type": "text",
+                                            "label": "BTC Price (D)"
+                                        },
+                                        {
+                                            "name": "4",
+                                            "type": "text",
+                                            "label": "ETH Price (E)"
+                                        },
+                                        {
+                                            "name": "5",
+                                            "type": "text",
+                                            "label": "SOL Price (F)"
+                                        },
+                                        {
+                                            "name": "6",
+                                            "type": "text",
+                                            "label": "Fear/Greed (G)"
+                                        },
+                                        {
+                                            "name": "7",
+                                            "type": "text",
+                                            "label": "Sentiment (H)"
+                                        },
+                                        {
+                                            "name": "8",
+                                            "type": "text",
+                                            "label": "Analysis Summary (I)"
+                                        },
+                                        {
+                                            "name": "9",
+                                            "type": "text",
+                                            "label": "Status (J)"
+                                        },
+                                        {
+                                            "name": "10",
+                                            "type": "text",
+                                            "label": "Portfolio_Impact (K)"
+                                        },
+                                        {
+                                            "name": "11",
+                                            "type": "text",
+                                            "label": "Market_Context (L)"
+                                        },
+                                        {
+                                            "name": "12",
+                                            "type": "text",
+                                            "label": "Execution_Status (M)"
+                                        },
+                                        {
+                                            "name": "13",
+                                            "type": "text",
+                                            "label": "Portfolio_Impact (N)"
+                                        },
+                                        {
+                                            "name": "14",
+                                            "type": "text",
+                                            "label": "(O)"
+                                        },
+                                        {
+                                            "name": "15",
+                                            "type": "text",
+                                            "label": "(P)"
+                                        },
+                                        {
+                                            "name": "16",
+                                            "type": "text",
+                                            "label": "(Q)"
+                                        },
+                                        {
+                                            "name": "17",
+                                            "type": "text",
+                                            "label": "(R)"
+                                        },
+                                        {
+                                            "name": "18",
+                                            "type": "text",
+                                            "label": "(S)"
+                                        },
+                                        {
+                                            "name": "19",
+                                            "type": "text",
+                                            "label": "(T)"
+                                        },
+                                        {
+                                            "name": "20",
+                                            "type": "text",
+                                            "label": "(U)"
+                                        },
+                                        {
+                                            "name": "21",
+                                            "type": "text",
+                                            "label": "(V)"
+                                        },
+                                        {
+                                            "name": "22",
+                                            "type": "text",
+                                            "label": "(W)"
+                                        },
+                                        {
+                                            "name": "23",
+                                            "type": "text",
+                                            "label": "(X)"
+                                        },
+                                        {
+                                            "name": "24",
+                                            "type": "text",
+                                            "label": "(Y)"
+                                        },
+                                        {
+                                            "name": "25",
+                                            "type": "text",
+                                            "label": "(Z)"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Values"
+                                }
+                            ]
+                        },
+                        "insertDataOption": {
+                            "mode": "chose",
+                            "label": "Insert rows"
+                        },
+                        "valueInputOption": {
+                            "mode": "chose",
+                            "label": "User entered"
+                        },
+                        "insertUnformatted": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            },
+                            "label": "My Google connection (fernandobasaez@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "mode",
+                        "type": "select",
+                        "label": "Search Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "select",
+                                "fromAll",
+                                "map"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertUnformatted",
+                        "type": "boolean",
+                        "label": "Unformatted",
+                        "required": true
+                    },
+                    {
+                        "name": "valueInputOption",
+                        "type": "select",
+                        "label": "Value input option",
+                        "validate": {
+                            "enum": [
+                                "USER_ENTERED",
+                                "RAW"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertDataOption",
+                        "type": "select",
+                        "label": "Insert data option",
+                        "validate": {
+                            "enum": [
+                                "INSERT_ROWS",
+                                "OVERWRITE"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "spreadsheetId",
+                        "type": "text",
+                        "label": "Spreadsheet ID",
+                        "required": true
+                    },
+                    {
+                        "name": "sheetId",
+                        "type": "select",
+                        "label": "Sheet Name",
+                        "required": true
+                    },
+                    {
+                        "name": "includesHeaders",
+                        "type": "select",
+                        "label": "Table contains headers",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                true,
+                                false
+                            ]
+                        }
+                    },
+                    {
+                        "name": "values",
+                        "spec": [
+                            {
+                                "name": "0",
+                                "type": "text",
+                                "label": "Date (A)"
+                            },
+                            {
+                                "name": "1",
+                                "type": "text",
+                                "label": "Analysis Type (B)"
+                            },
+                            {
+                                "name": "2",
+                                "type": "text",
+                                "label": "Action (C)"
+                            },
+                            {
+                                "name": "3",
+                                "type": "text",
+                                "label": "BTC Price (D)"
+                            },
+                            {
+                                "name": "4",
+                                "type": "text",
+                                "label": "ETH Price (E)"
+                            },
+                            {
+                                "name": "5",
+                                "type": "text",
+                                "label": "SOL Price (F)"
+                            },
+                            {
+                                "name": "6",
+                                "type": "text",
+                                "label": "Fear/Greed (G)"
+                            },
+                            {
+                                "name": "7",
+                                "type": "text",
+                                "label": "Sentiment (H)"
+                            },
+                            {
+                                "name": "8",
+                                "type": "text",
+                                "label": "Analysis Summary (I)"
+                            },
+                            {
+                                "name": "9",
+                                "type": "text",
+                                "label": "Status (J)"
+                            },
+                            {
+                                "name": "10",
+                                "type": "text",
+                                "label": "Portfolio_Impact (K)"
+                            },
+                            {
+                                "name": "11",
+                                "type": "text",
+                                "label": "Market_Context (L)"
+                            },
+                            {
+                                "name": "12",
+                                "type": "text",
+                                "label": "Execution_Status (M)"
+                            },
+                            {
+                                "name": "13",
+                                "type": "text",
+                                "label": "Portfolio_Impact (N)"
+                            },
+                            {
+                                "name": "14",
+                                "type": "text",
+                                "label": "(O)"
+                            },
+                            {
+                                "name": "15",
+                                "type": "text",
+                                "label": "(P)"
+                            },
+                            {
+                                "name": "16",
+                                "type": "text",
+                                "label": "(Q)"
+                            },
+                            {
+                                "name": "17",
+                                "type": "text",
+                                "label": "(R)"
+                            },
+                            {
+                                "name": "18",
+                                "type": "text",
+                                "label": "(S)"
+                            },
+                            {
+                                "name": "19",
+                                "type": "text",
+                                "label": "(T)"
+                            },
+                            {
+                                "name": "20",
+                                "type": "text",
+                                "label": "(U)"
+                            },
+                            {
+                                "name": "21",
+                                "type": "text",
+                                "label": "(V)"
+                            },
+                            {
+                                "name": "22",
+                                "type": "text",
+                                "label": "(W)"
+                            },
+                            {
+                                "name": "23",
+                                "type": "text",
+                                "label": "(X)"
+                            },
+                            {
+                                "name": "24",
+                                "type": "text",
+                                "label": "(Y)"
+                            },
+                            {
+                                "name": "25",
+                                "type": "text",
+                                "label": "(Z)"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Values"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "google-email:ActionSendEmail",
+            "version": 2,
+            "parameters": {
+                "account": 8588048
+            },
+            "filter": {
+                "name": "Send Alert if Action Required",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{5.data.recommendation}}",
+                            "b": "HOLD",
+                            "o": "text:notequal"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "cc": [],
+                "to": [
+                    "fernandobasaez@gmail.com"
+                ],
+                "bcc": [],
+                "from": "",
+                "html": "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>\n  <h2 style='color: #1f2937; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;'>\n    📊 Alerta de Portfolio Crypto\n  </h2>\n  \n  <div style='background: {{if(contains(\"ACCUMULATE\"; 5.data.recommendation); \"#dcfce7\"; if(contains(\"REDUCE\"; 5.data.recommendation); \"#fef2f2\"; \"#fef3c7\"))}}; padding: 15px; border-radius: 8px; margin: 20px 0;'>\n    <h3 style='margin: 0; color: {{if(contains(\"ACCUMULATE\"; 5.data.recommendation); \"#15803d\"; if(contains(\"REDUCE\"; 5.data.recommendation); \"#dc2626\"; \"#d97706\"))}};'>\n      🎯 RECOMENDACIÓN: {{5.data.recommendation}}\n    </h3>\n  </div>\n  \n  <h3 style='color: #374151; margin-top: 25px;'>💰 Acciones del Portfolio y Precios (AUD)</h3>\n  <table style='width: 100%; border-collapse: collapse; margin: 10px 0;'>\n    <tr style='background: #f9fafb;'>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;'>Activo</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;'>Precio</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;'>Cambio 24h</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;'>Acción</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;'>% Rebalance</td>\n    </tr>\n    <tr>\n      <td style='padding: 12px; border: 1px solid #e5e7eb;'>🟠 Bitcoin (BTC)</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;'>${{formatNumber(2.data.bitcoin.aud; 0)}}</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; color: {{if(2.data.bitcoin.aud_24h_change > 0; \"#15803d\"; \"#dc2626\")}};'>{{round(2.data.bitcoin.aud_24h_change; 2)}}%</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold; color: {{if(contains(\"COMPRAR\"; 5.data.btc_action); \"#15803d\"; if(contains(\"VENDER\"; 5.data.btc_action); \"#dc2626\"; \"#6b7280\"))}};'>{{5.data.btc_action}}</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;'>{{5.data.btc_percentage}}</td>\n    </tr>\n    <tr style='background: #f9fafb;'>\n      <td style='padding: 12px; border: 1px solid #e5e7eb;'>🔵 Ethereum (ETH)</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;'>${{formatNumber(2.data.ethereum.aud; 0)}}</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; color: {{if(2.data.ethereum.aud_24h_change > 0; \"#15803d\"; \"#dc2626\")}};'>{{round(2.data.ethereum.aud_24h_change; 2)}}%</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold; color: {{if(contains(\"COMPRAR\"; 5.data.eth_action); \"#15803d\"; if(contains(\"VENDER\"; 5.data.eth_action); \"#dc2626\"; \"#6b7280\"))}};'>{{5.data.eth_action}}</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;'>{{5.data.eth_percentage}}</td>\n    </tr>\n    <tr>\n      <td style='padding: 12px; border: 1px solid #e5e7eb;'>🟣 Solana (SOL)</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;'>${{formatNumber(2.data.solana.aud; 0)}}</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; color: {{if(2.data.solana.aud_24h_change > 0; \"#15803d\"; \"#dc2626\")}};'>{{round(2.data.solana.aud_24h_change; 2)}}%</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold; color: {{if(contains(\"COMPRAR\"; 5.data.sol_action); \"#15803d\"; if(contains(\"VENDER\"; 5.data.sol_action); \"#dc2626\"; \"#6b7280\"))}};'>{{5.data.sol_action}}</td>\n      <td style='padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;'>{{5.data.sol_percentage}}</td>\n    </tr>\n  </table>\n  \n  <h3 style='color: #374151; margin-top: 25px;'>📈 Sentimiento del Mercado</h3>\n  <div style='background: #f3f4f6; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;'>\n    <p style='margin: 0;'><strong>Índice de Miedo y Codicia:</strong> {{3.data.data[].value}}/100 ({{3.data.data[].value_classification}})</p>\n    <p style='margin: 5px 0 0 0; font-size: 14px; color: #6b7280;'>Este índice mide las emociones del mercado crypto: 0-25 = Miedo Extremo, 26-49 = Miedo, 50-74 = Neutral, 75-100 = Codicia</p>\n  </div>\n  \n  <h3 style='color: #374151; margin-top: 25px;'>🤖 Análisis Resumido en Español</h3>\n  <div style='background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;'>\n    <div style='margin-bottom: 15px; padding: 10px; background: #eff6ff; border-radius: 6px; border-left: 3px solid #3b82f6;'>\n      <h4 style='margin: 0 0 8px 0; color: #1e40af; font-size: 14px;'>📋 Resumen Ejecutivo</h4>\n      <p style='margin: 0; font-size: 14px; line-height: 1.4;'><strong>Recomendación:</strong> {{5.data.recommendation}} | <strong>Bitcoin:</strong> {{5.data.btc_action}} {{5.data.btc_percentage}} | <strong>Ethereum:</strong> {{5.data.eth_action}} {{5.data.eth_percentage}} | <strong>Solana:</strong> {{5.data.sol_action}} {{5.data.sol_percentage}}</p>\n    </div>\n    <div style='font-size: 14px; line-height: 1.6; color: #374151;'>\n      {{substring(4.choices[].message.content; 300; 600)}}\n    </div>\n    <div style='margin-top: 10px; font-size: 12px; color: #6b7280; font-style: italic;'>\n      Análisis completo disponible en el registro del sistema.\n    </div>\n  </div>\n  \n  <div style='margin-top: 20px; padding: 15px; background: #e0f2fe; border-radius: 8px; border: 1px solid #0284c7;'>\n    <p style='margin: 0; font-size: 14px; color: #0c4a6e;'>\n      🔧 <strong>Estado del Sistema:</strong> {{if(5.data.success; \"✅ Análisis procesado correctamente por AI Python\"; \"❌ Error en el procesamiento de datos\")}}\n    </p>\n  </div>\n  \n  <div style='margin-top: 20px; padding: 15px; background: #fef9e7; border-radius: 8px; border: 1px solid #fbbf24;'>\n    <p style='margin: 0; font-size: 14px; color: #92400e;'>\n      ⚠️ <strong>Importante:</strong> Este es un análisis automatizado solo para fines informativos. Las criptomonedas son inversiones de alto riesgo. Siempre realiza tu propia investigación y considera tu tolerancia al riesgo antes de tomar decisiones de inversión. No constituye asesoramiento financiero.\n    </p>\n  </div>\n  \n  <div style='margin-top: 20px; text-align: center; font-size: 12px; color: #6b7280;'>\n    <p>Generado el {{formatDate(now; \"DD/MM/YYYY HH:mm:ss\"; \"Australia/Melbourne\")}} (Hora de Melbourne)</p>\n    <p>Powered by AI Analysis + Python Data Extraction</p>\n  </div>\n</div>",
+                "subject": "🚨 Acción Crypto: {{5.data.recommendation}} - {{upper(substring(formatDate(now; \"DD/MM HH:mm\"; \"Australia/Melbourne\"); 1; 11))}}",
+                "attachments": []
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1800,
+                    "y": 150,
+                    "name": "Send Spanish Email Alert"
+                },
+                "restore": {
+                    "expect": {
+                        "cc": {
+                            "mode": "chose"
+                        },
+                        "to": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "bcc": {
+                            "mode": "chose"
+                        },
+                        "attachments": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "account": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-restricted"
+                            },
+                            "label": "My Google Restricted connection (fernandobasaez@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "account",
+                        "type": "account:google-restricted",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "from",
+                        "type": "text",
+                        "label": "From"
+                    },
+                    {
+                        "name": "to",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Email address",
+                            "required": true
+                        },
+                        "type": "array",
+                        "label": "To",
+                        "required": true
+                    },
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject"
+                    },
+                    {
+                        "name": "html",
+                        "type": "text",
+                        "label": "Content"
+                    },
+                    {
+                        "name": "attachments",
+                        "spec": [
+                            {
+                                "name": "fileName",
+                                "type": "filename",
+                                "label": "File name",
+                                "required": true,
+                                "semantic": "file:name"
+                            },
+                            {
+                                "name": "data",
+                                "type": "buffer",
+                                "label": "Data",
+                                "required": true,
+                                "semantic": "file:data"
+                            },
+                            {
+                                "name": "cid",
+                                "type": "text",
+                                "label": "Content-ID"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Attachments"
+                    },
+                    {
+                        "name": "cc",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Email address"
+                        },
+                        "type": "array",
+                        "label": "Copy recipient"
+                    },
+                    {
+                        "name": "bcc",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Email address"
+                        },
+                        "type": "array",
+                        "label": "Blind copy recipient"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}
